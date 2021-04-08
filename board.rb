@@ -14,14 +14,14 @@ class Board
     #outer row
     (0..@grid[0].length - 1).each do |idx|
       if idx == 0
-        @grid[0][idx] = " "
+        self[0, idx] = " "
       end
 
-      @grid[0][idx] = idx.to_s
+      self[0, idx] = idx.to_s
     end
     #outer column
     (1..@grid.length - 1).each do |row|
-      @grid[row][0] = row.to_s
+      self[row, 0] = row.to_s
     end
     
     #Amount of unique cards needed, then need double for board.
@@ -31,7 +31,7 @@ class Board
 
     (1...@grid.length).each do |row|
       (1...@grid.length).each do |col|
-        @grid[row][col] = @cards[-1]
+        self[row, col] = @cards[-1]
         @cards.pop
       end
     end
@@ -67,7 +67,11 @@ class Board
           row_string += col + " " 
           next
         else
-          row_string += col.value + " "
+          if col.face_up == true
+            row_string += col.value + " "
+          else 
+            row_string += " " + " "
+          end
         end
       end
       row_string += "\n"
@@ -77,10 +81,19 @@ class Board
   end
 
   def won?
-
   end
 
-  def reveal
+  def reveal(row, col)
+    card = self[row, col]
+    card.reveal
+    render
+  end
 
+  def [](row, col)
+    @grid[row][col]
+  end
+
+  def []=(row, col, value)
+    @grid[row][col] = value
   end
 end
