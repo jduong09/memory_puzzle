@@ -1,16 +1,6 @@
 require_relative "card"
 require_relative "board"
 class Game
-  #How to play
-    #Game is over when player has flipped all the cards.
-      # Each turn:
-        # Prompt player to choose a card to flip
-          # Confirm that the card is a new card/not a location they have already solved
-            # Once they have chosen a new card to flip and guess its twin's location
-              # Flip the card so they see the value of the card
-                # Flip the card back so they don't see the value of the card
-                # Prompt the player to choose where the card's twin is.
-                  # Check if they are right.
   def initialize
     @board = Board.new(5, 5)
     @player_name = create_player
@@ -18,17 +8,54 @@ class Game
 
   def game_loop
     @board.populate
-    @board.render
-    take_turn
+    @board.reveal_all
+    puts "Take a look at the board, and memorize!"
+    sleep(5)  
+    @board.hide_all
+    until game_over?
+      take_turn
+    end
   end
 
   def take_turn
+    system("clear")
+    @board.render
     puts "Choose a location to flip a card"
     puts "Row:"
     row = gets.chomp.to_i
     puts "Col:"
     col = gets.chomp.to_i
-    @board.reveal(row, col)
+    card = @board.reveal(row, col)
+
+    system("clear")
+    @board.render
+    puts "Where is the other #{card.value}?"
+    puts "Row:"
+    row = gets.chomp.to_i
+    puts "Col:"
+    col = gets.chomp.to_i
+    other_card = @board.reveal(row, col)
+
+    system("clear")
+    @board.render
+
+    if card == other_card
+      puts "nice"
+    else
+      puts "lol u suck"
+      sleep(5)
+      card.hide 
+      other_card.hide
+    end
+    
+  end
+
+  def game_over?
+    if @board.won?
+      return true
+    else
+      return false
+    end
   end
 
   def create_player

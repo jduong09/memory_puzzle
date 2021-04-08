@@ -81,12 +81,38 @@ class Board
   end
 
   def won?
+    (1...@grid.length).each do |row|
+      (1...@grid.length).each do |col|
+        next if self[row, col].face_up == true
+        return false if self[row, col].face_up == false
+      end
+    end
+    return true
   end
 
   def reveal(row, col)
     card = self[row, col]
     card.reveal
+
+    card
+  end
+
+  def reveal_all
+    (1...@grid.length).each do |row|
+      (1...@grid.length).each do |col|
+        self[row, col].reveal
+      end
+    end
+
     render
+  end
+  
+  def hide_all
+    (1...@grid.length).each do |row|
+      (1...@grid.length).each do |col|
+        self[row, col].hide
+      end
+    end
   end
 
   def [](row, col)
